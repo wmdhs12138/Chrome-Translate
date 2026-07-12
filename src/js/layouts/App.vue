@@ -12,17 +12,18 @@
             @open="dropdownTouched(true)"
             @close="dropdownTouched(false)">
 
-            <span slot="option" slot-scope="props">
-              {{ props.option.$isLabel ? props.option.$groupLabel : props.option.name }}
+            <template #option="{ option }">
+              {{ option.name }}
               <svg
                 class="icon icon-pin"
-                v-if="!props.option.$isLabel && props.option.code !== 'auto'"
-                @click.stop="pinLanguage(props.option.code, false)">
+                v-if="option.code !== 'auto'"
+                @mousedown.stop.prevent
+                @click.stop="pinLanguage(option.code, false)">
                 <use xlink:href="#icon-pin"></use>
               </svg>
-            </span>
+            </template>
 
-            <span slot="noResult">{{ uiStrings.languagesNotFound }}</span>
+            <template #noResult>{{ uiStrings.languagesNotFound }}</template>
           </multiselect>
 
           <div class="dropdown-spacer"></div>
@@ -36,17 +37,18 @@
             @open="dropdownTouched(true)"
             @close="dropdownTouched(false)">
 
-            <span slot="option" slot-scope="props">
-              {{ props.option.$isLabel ? props.option.$groupLabel : props.option.name }}
+            <template #option="{ option }">
+              {{ option.name }}
               <svg
                 class="icon icon-pin"
-                v-if="!props.option.$isLabel && props.option.code !== 'auto'"
-                @click.stop="pinLanguage(props.option.code, true)">
+                v-if="option.code !== 'auto'"
+                @mousedown.stop.prevent
+                @click.stop="pinLanguage(option.code, true)">
                 <use xlink:href="#icon-pin"></use>
               </svg>
-            </span>
+            </template>
 
-            <span slot="noResult">{{ uiStrings.languagesNotFound }}</span>
+            <template #noResult>{{ uiStrings.languagesNotFound }}</template>
           </multiselect>
         </div>
 
@@ -65,7 +67,16 @@
         <div class="resizer-input" @mousedown="inputResizerMouseDown"></div>
 
         <div class="translation-result-container">
-          <div class="translation-result" v-html="translationResultFormatted"></div>
+          <div class="translation-result">
+            <div class="translation-result-text">{{ translationResult.result }}</div>
+
+            <template v-for="section in translationResult.additional" :key="section.title">
+              <h3>{{ section.title }}</h3>
+              <ol>
+                <li v-for="item in section.items" :key="item">{{ item }}</li>
+              </ol>
+            </template>
+          </div>
 
           <div class="translation-overlay" :class="{ 'is-visible': translating }">
             <loader></loader>
@@ -110,7 +121,7 @@
   import Multiselect from '../components/Multiselect.vue';
   import Loader from '../components/Loader.vue';
   import config from '../config';
-  import { between, escapeHTMLEntities, getSelectedText } from '../misc/utils';
+  import { between, getSelectedText } from '../misc/utils';
   import uiStrings from '../misc/ui-strings';
   import languages from '../translator/languages';
   import translator from '../translator/translator';
@@ -207,7 +218,7 @@
         sourceText: '',
         translationResult: {
           result: '',
-          additional: '',
+          additional: [],
           detectedLanguage: '',
           detectedTargetLanguage: '',
         },
@@ -245,12 +256,12 @@
             groupLabel: this.uiStrings.languagesPinned,
             items: [
               this.autodetectLanguageItem,
-              ...this.pinnedSourceLanguages.map(langCode => {
-                return {
-                  ...findLanguageItem(langCode),
-                  pinned: true
-                }
-              })
+              ...this.pinnedSourceLanguages
+                .map(langCode => {
+                  const language = findLanguageItem(langCode);
+                  return language ? { ...language, pinned: true } : null;
+                })
+                .filter(Boolean)
             ]
           },
           {
@@ -266,12 +277,12 @@
             groupLabel: this.uiStrings.languagesPinned,
             items: [
               this.autoselectLanguageItem,
-              ...this.pinnedTargetLanguages.map(langCode => {
-                return {
-                  ...findLanguageItem(langCode),
-                  pinned: true
-                }
-              })
+              ...this.pinnedTargetLanguages
+                .map(langCode => {
+                  const language = findLanguageItem(langCode);
+                  return language ? { ...language, pinned: true } : null;
+                })
+                .filter(Boolean)
             ]
           },
           {
@@ -279,13 +290,6 @@
             items: languages
           }
         ];
-      },
-
-      translationResultFormatted() {
-        return (
-          escapeHTMLEntities(this.translationResult.result).replace(/\n/g, '<br>') +
-          this.translationResult.additional
-        )
       }
     },
 
@@ -379,6 +383,15 @@
             this.translating = false;
 
             localStorage.translationResult = JSON.stringify(this.translationResult)
+          })
+          .catch(() => {
+            this.translationResult = {
+              result: '',
+              additional: [],
+              detectedLanguage: '',
+              detectedTargetLanguage: ''
+            };
+            this.translating = false;
           });
       },
 

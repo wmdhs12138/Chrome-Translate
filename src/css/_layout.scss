@@ -102,6 +102,10 @@ body {
   margin: 22px 0 10px;
 }
 
+.translation-result-text {
+  white-space: pre-wrap;
+}
+
 .translation-result ol {
   margin-top: 0;
 }
@@ -163,7 +167,7 @@ body {
   width: 28px;
   height: 28px;
   z-index: 4;
-  background: #5295a5 url(/images/play.svg) no-repeat 50%;
+  background: #5295a5 url('../../public_html/images/play.svg') no-repeat 50%;
   background-size: 12px 12px;
   border-radius: 50%;
   border: none;
@@ -256,7 +260,7 @@ body {
   cursor: nesw-resize;
   z-index: 1;
   user-select: none;
-  background: url(/images/resizer-corner.svg) 0 100% no-repeat;
+  background: url('../../public_html/images/resizer-corner.svg') 0 100% no-repeat;
   background-size: 12px 12px;
   opacity: 0.4;
   transition: opacity 0.3s ease;

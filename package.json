@@ -1,25 +1,23 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "webpack --hide-modules -p",
-    "watch": "webpack --hide-modules --watch"
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build && node scripts/prepare-extension.mjs",
+    "watch": "vite build --watch",
+    "lint:firefox": "npm run build && web-ext lint --source-dir dist/firefox",
+    "package:firefox": "npm run build && web-ext build --source-dir dist/firefox --artifacts-dir dist --overwrite-dest",
+    "sign:firefox": "npm run build && web-ext sign --source-dir dist/firefox --artifacts-dir dist --channel unlisted --approval-timeout 0",
+    "submit:amo": "npm run build && web-ext sign --source-dir dist/firefox --artifacts-dir dist --channel listed --amo-metadata amo/metadata-listed.json --approval-timeout 0"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "css-loader": "^0.28.4",
-    "extract-text-webpack-plugin": "^3.0.0",
-    "node-sass": "^7.0.0",
-    "sass-loader": "^6.0.6",
-    "vue-loader": "^12.2.2",
-    "vue-template-compiler": "^2.4.1",
-    "webpack": "^3.2.0"
+    "@vitejs/plugin-vue": "^6.0.0",
+    "sass": "^1.89.2",
+    "vite": "^7.0.0",
+    "web-ext": "^8.9.0"
   },
   "dependencies": {
     "normalize.css": "^7.0.0",
-    "vue": "^2.4.1",
-    "vue-multiselect": "^2.0.8"
+    "vue": "^3.5.17"
   }
 }

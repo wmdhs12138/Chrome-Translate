@@ -11,7 +11,7 @@ export default {
     if (!text.trim()) {
       return Promise.resolve({
         result: '',
-        additional: ''
+        additional: []
       });
     }
 

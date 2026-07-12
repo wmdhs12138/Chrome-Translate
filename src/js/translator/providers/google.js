@@ -1,5 +1,3 @@
-import { escapeHTMLEntities } from '../../misc/utils';
-
 const audio = new Audio;
 
 export default {
@@ -18,11 +16,13 @@ export default {
       .then(response => {
         let result = response[0].map(value => value[0]).join('');
 
-        let additional = '';
+        let additional = [];
         if (response[1]) {
           response[1].forEach(value => {
-            additional += '<h3>' + escapeHTMLEntities(value[0]) + '</h3>';
-            additional += '<ol>' + value[1].map(value => '<li>' + escapeHTMLEntities(value) + '</li>').join('') + '</ol>';
+            additional.push({
+              title: value[0],
+              items: value[1]
+            });
           });
         }
 

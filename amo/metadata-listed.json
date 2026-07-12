@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "en-US": "Translate selected page text from a small floating G icon.",
+    "zh-CN": "选中文字后，点击悬浮小 G 图标查看翻译。"
+  },
+  "description": {
+    "en-US": "小G翻译 shows a small floating Google Translate icon after text is selected on a page. Click the icon to translate the selected text inline using Google Translate.",
+    "zh-CN": "小G翻译会在你选中网页文字后显示一个悬浮的小 G 图标。点击图标即可在页面内查看 Google 翻译结果。"
+  },
+  "categories": [
+    "language-support"
+  ],
+  "version": {
+    "license": "MIT",
+    "approval_notes": "This extension is named 小G翻译. It sends selected page text to Google Translate endpoints only after the user clicks the floating translate icon. It does not use analytics, tracking, accounts, or remote code. The production bundle is generated with npm run build from the source in this repository."
+  }
+}
